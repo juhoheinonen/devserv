@@ -1,8 +1,10 @@
 ﻿using DevServ.Core.Entities;
+using DevServ.Core.Exceptions;
 using DevServ.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DevServ.Infrastructure
@@ -18,12 +20,16 @@ namespace DevServ.Infrastructure
 
         public async Task<Developer> GetByIdAsync(int id)
         {
-            return await _dbContext.Developers.Include(d => d.Skills).SingleOrDefaultAsync(e => e.Id == id);
+            return await _dbContext.Developers.
+                Where(d => !d.IsDeleted).
+                Include(d => d.Skills).SingleOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task<List<Developer>> ListAsync()
         {
-            return await _dbContext.Developers.Include(d => d.Skills).ToListAsync();
+            return await _dbContext.Developers.
+                Where(d => !d.IsDeleted).
+                Include(d => d.Skills).ToListAsync();
         }
 
         public async Task UpdateAsync(Developer entity)
@@ -32,7 +38,7 @@ namespace DevServ.Infrastructure
 
             if (existingItem == null)
             {
-                throw new ArgumentException("No developer found with given id.");
+                throw new NoEntityFoundWithIdException();
             }
 
             existingItem.FirstName = entity.FirstName;
@@ -44,12 +50,25 @@ namespace DevServ.Infrastructure
             existingItem.HomePage = entity.HomePage;
             existingItem.OpenToWork = entity.OpenToWork;
 
-            existingItem.Skills.Clear();            
-            
+            existingItem.Skills.Clear();
+
             existingItem.Skills = entity.Skills;
 
             await _dbContext.SaveChangesAsync();
+        }
 
+        public async Task DeleteAsync(int id)
+        {
+            var existingItem = await GetByIdAsync(id);
+
+            if (existingItem == null)
+            {
+                throw new NoEntityFoundWithIdException();
+            }
+
+            existingItem.IsDeleted = true;
+
+            await _dbContext.SaveChangesAsync();
         }
 
         //public T GetById<T>(int id) where T : BaseEntity, IAggregateRoot

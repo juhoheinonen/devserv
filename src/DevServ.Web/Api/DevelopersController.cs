@@ -1,4 +1,5 @@
 ﻿using DevServ.Core.Entities;
+using DevServ.Core.Exceptions;
 using DevServ.SharedKernel.Interfaces;
 using DevServ.Web.ApiModels;
 using Microsoft.AspNetCore.Mvc;
@@ -49,9 +50,30 @@ namespace DevServ.Web.Api
             // todo: implement validation.
             var developer = DeveloperDto.ToDeveloper(developerDto);
 
-            await _repository.UpdateAsync(developer);
+            try
+            {
+                await _repository.UpdateAsync(developer);
+                return Ok();
+            }
+            catch (NoEntityFoundWithIdException ex)
+            {
+                return NotFound();
+            }            
+        }
 
-            return Ok();
+        // DELETE: api/Developers
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _repository.DeleteAsync(id);
+                return Ok();
+            }
+            catch (NoEntityFoundWithIdException ex)
+            {
+                return NotFound();
+            }
         }
     }
 }

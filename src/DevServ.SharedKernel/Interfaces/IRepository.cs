@@ -13,6 +13,6 @@ namespace DevServ.SharedKernel.Interfaces
         //Task<List<T>> ListAsync<T>(ISpecification<T> spec) where T : BaseEntity, IAggregateRoot; 
         //Task<T> AddAsync<T>(T entity) where T : BaseEntity, IAggregateRoot;
         Task UpdateAsync(T entity);
-        //Task DeleteAsync<T>(T entity) where T : BaseEntity, IAggregateRoot;
+        Task DeleteAsync(int id);
     }
 }

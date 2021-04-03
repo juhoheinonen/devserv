@@ -19,6 +19,8 @@ namespace DevServ.Core.Entities
         public string HomePage { get; set; }
         public bool OpenToWork { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public ICollection<Skill> Skills { get; set; }
     }    
 }

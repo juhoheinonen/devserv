@@ -19,7 +19,7 @@ namespace DevServ.Web.ApiModels
         [Required]
         public string SocialSecurityNumber { get; set; }
         public string HomePage { get; set; }
-        public bool OpenToWork { get; set; }
+        public bool OpenToWork { get; set; }        
 
         public IEnumerable<SkillDto> Skills { get; set; }
 
@@ -36,6 +36,7 @@ namespace DevServ.Web.ApiModels
                 SocialSecurityNumber = developer.SocialSecurityNumber,
                 HomePage = developer.HomePage,
                 OpenToWork = developer.OpenToWork,
+                //IsDeleted = developer.IsDeleted,
                 Skills = SkillDto.FromSkills(developer.Skills)
             };
         }
@@ -52,7 +53,7 @@ namespace DevServ.Web.ApiModels
                 PhoneNumber = developerDto.PhoneNumber,
                 SocialSecurityNumber = developerDto.SocialSecurityNumber,
                 HomePage = developerDto.HomePage,
-                OpenToWork = developerDto.OpenToWork,
+                OpenToWork = developerDto.OpenToWork,                
                 Skills = SkillDto.ToSkills(developerDto.Skills)
             };
         }
