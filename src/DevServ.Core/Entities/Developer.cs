@@ -18,7 +18,7 @@ namespace DevServ.Core.Entities
         public string SocialSecurityNumber { get; set; }
         public string HomePage { get; set; }
         public bool OpenToWork { get; set; }
-
+        
         public ICollection<Skill> Skills { get; set; }
     }
 }

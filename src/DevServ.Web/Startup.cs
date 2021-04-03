@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using DevServ.Infrastructure;
 using DevServ.SharedKernel.Interfaces;
+using DevServ.Core.Entities;
 
 namespace DevServ.Web
 {
@@ -32,7 +33,7 @@ namespace DevServ.Web
 
             services.AddDbContext(connectionString);
 
-            services.AddScoped(typeof(IRepository), typeof(EfRepository));
+            services.AddScoped(typeof(IRepository<Developer>), typeof(DeveloperRepository));
 
             services.AddControllers();
 

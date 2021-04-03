@@ -1,5 +1,7 @@
 ﻿using DevServ.Core.Entities;
+using DevServ.SharedKernel;
 using DevServ.SharedKernel.Interfaces;
+using DevServ.Web.ApiModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,9 +12,9 @@ namespace DevServ.Web.Api
 {
     public class DevelopersController : BaseApiController
     {
-        private IRepository _repository;
+        private IRepository<Developer> _repository;
 
-        public DevelopersController(IRepository repository)
+        public DevelopersController(IRepository<Developer> repository)
         {
             _repository = repository;
         }
@@ -21,8 +23,8 @@ namespace DevServ.Web.Api
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            var items = (await _repository.ListAsync<Developer>())
-                            .Select(ToDoItemDTO.FromToDoItem);
+            var repositoryItems = await _repository.ListAsync();
+            var items = repositoryItems.Select(DeveloperDto.FromDeveloper);
             return Ok(items);
         }
     }

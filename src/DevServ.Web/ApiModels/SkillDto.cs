@@ -11,13 +11,16 @@ namespace DevServ.Web.ApiModels
 
         internal static IEnumerable<SkillDto> FromSkills(ICollection<Skill> skills)
         {
-            foreach (var skill in skills)
+            if (skills != null)
             {
-                yield return new SkillDto
+                foreach (var skill in skills)
                 {
-                    Name = skill.Name,
-                    YearsOfExperience = skill.YearsOfExperience
-                };
+                    yield return new SkillDto
+                    {
+                        Name = skill.Name,
+                        YearsOfExperience = skill.YearsOfExperience
+                    };
+                }
             }
         }
     }
