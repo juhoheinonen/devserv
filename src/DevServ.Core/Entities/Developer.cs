@@ -13,12 +13,11 @@ namespace DevServ.Core.Entities
         public string LastName { get; set; }
         public string Description { get; set; }
         public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public string PhoneNumber { get; set; }         
         public string SocialSecurityNumber { get; set; }
         public string HomePage { get; set; }
         public bool OpenToWork { get; set; }
 
-        public List<Skill> Skills { get; set; }
+        public ICollection<Skill> Skills { get; set; }
     }
 }
