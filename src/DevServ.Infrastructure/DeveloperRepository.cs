@@ -2,7 +2,6 @@
 using DevServ.Core.Exceptions;
 using DevServ.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -71,51 +70,13 @@ namespace DevServ.Infrastructure
             await _dbContext.SaveChangesAsync();
         }
 
-        //public T GetById<T>(int id) where T : BaseEntity, IAggregateRoot
-        //{
-        //    return _dbContext.Set<T>().SingleOrDefault(e => e.Id == id);
-        //}
+        public async Task<Developer> AddAsync(Developer entity)
+        {
+            await _dbContext.Developers.AddAsync(entity);
 
-        //public Task<T> GetByIdAsync<T>(int id) where T : BaseEntity, IAggregateRoot
-        //{
-        //    return _dbContext.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
-        //}
+            await _dbContext.SaveChangesAsync();
 
-        //public Task<List<T>> ListAsync<T>() where T : BaseEntity, IAggregateRoot
-        //{
-        //    return _dbContext.Set<T>().ToListAsync();
-        //}
-
-        //public Task<List<T>> ListAsync<T>(ISpecification<T> spec) where T : BaseEntity, IAggregateRoot
-        //{
-        //    var specificationResult = ApplySpecification(spec);
-        //    return specificationResult.ToListAsync();
-        //}
-
-        //public async Task<T> AddAsync<T>(T entity) where T : BaseEntity, IAggregateRoot
-        //{
-        //    await _dbContext.Set<T>().AddAsync(entity);
-        //    await _dbContext.SaveChangesAsync();
-
-        //    return entity;
-        //}
-
-        //public Task UpdateAsync<T>(T entity) where T : BaseEntity, IAggregateRoot
-        //{
-        //    _dbContext.Entry(entity).State = EntityState.Modified;
-        //    return _dbContext.SaveChangesAsync();
-        //}
-
-        //public Task DeleteAsync<T>(T entity) where T : BaseEntity, IAggregateRoot
-        //{
-        //    _dbContext.Set<T>().Remove(entity);
-        //    return _dbContext.SaveChangesAsync();
-        //}
-
-        //private IQueryable<T> ApplySpecification<T>(ISpecification<T> spec) where T : BaseEntity
-        //{
-        //    var evaluator = new SpecificationEvaluator<T>();
-        //    return evaluator.GetQuery(_dbContext.Set<T>().AsQueryable(), spec);
-        //}
+            return entity;
+        }        
     }
 }

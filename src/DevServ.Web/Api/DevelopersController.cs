@@ -3,7 +3,9 @@ using DevServ.Core.Exceptions;
 using DevServ.SharedKernel.Interfaces;
 using DevServ.Web.ApiModels;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace DevServ.Web.Api
@@ -41,6 +43,23 @@ namespace DevServ.Web.Api
             return NotFound();
         }
 
+        // POST: api/Developers
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] DeveloperDto developerDto)
+        {
+            var developer = DeveloperDto.ToDeveloper(developerDto);
+
+            try
+            {
+                developer = await _repository.AddAsync(developer);
+                return Ok(DeveloperDto.FromDeveloper(developer));
+            }
+            catch (Exception ex)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }            
+        }
+
         // PUT: api/Developers
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] DeveloperDto developerDto)
@@ -58,7 +77,7 @@ namespace DevServ.Web.Api
             catch (NoEntityFoundWithIdException ex)
             {
                 return NotFound();
-            }            
+            }
         }
 
         // DELETE: api/Developers
