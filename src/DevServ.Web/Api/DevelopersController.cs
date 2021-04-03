@@ -69,15 +69,27 @@ namespace DevServ.Web.Api
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var repositoryItem = await _repository.GetByIdAsync(id);
-
-            if (repositoryItem != null)
+            try
             {
-                var item = DeveloperDto.FromDeveloper(repositoryItem);
-                return Ok(item);
-            }
+                _logger.Information("Start get by id");
 
-            return NotFound();
+                var repositoryItem = await _repository.GetByIdAsync(id);
+
+                if (repositoryItem != null)
+                {
+                    var item = DeveloperDto.FromDeveloper(repositoryItem);
+                    return Ok(item);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "An error in get by id");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         // POST: api/Developers
