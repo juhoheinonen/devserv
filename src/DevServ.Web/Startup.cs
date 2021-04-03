@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using DevServ.Infrastructure;
+using DevServ.SharedKernel.Interfaces;
 
 namespace DevServ.Web
 {
@@ -31,11 +32,14 @@ namespace DevServ.Web
 
             services.AddDbContext(connectionString);
 
+            services.AddScoped(typeof(IRepository), typeof(EfRepository));
+
             services.AddControllers();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DevServ.Web", Version = "v1" });
+                c.EnableAnnotations();
             });
         }
 
@@ -45,8 +49,6 @@ namespace DevServ.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DevServ.Web v1"));
             }
 
             app.UseHttpsRedirection();
@@ -54,6 +56,20 @@ namespace DevServ.Web
             app.UseRouting();
 
             //app.UseAuthorization();
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseCookiePolicy();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DevServ.Web");
+                //c.RoutePrefix = string.Empty;
+            });
 
             app.UseEndpoints(endpoints =>
             {

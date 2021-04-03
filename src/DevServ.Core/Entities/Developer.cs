@@ -1,4 +1,5 @@
 ﻿using DevServ.SharedKernel;
+using DevServ.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DevServ.Core.Entities
 {
-    public class Developer : BaseEntity
+    public class Developer : BaseEntity, IAggregateRoot
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
