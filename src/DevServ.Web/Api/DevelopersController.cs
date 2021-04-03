@@ -1,9 +1,11 @@
 ﻿using DevServ.Core.Entities;
 using DevServ.Core.Exceptions;
+using DevServ.Infrastructure;
 using DevServ.SharedKernel.Interfaces;
 using DevServ.Web.ApiModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -25,6 +27,19 @@ namespace DevServ.Web.Api
         {
             var repositoryItems = await _repository.ListAsync();
             var items = repositoryItems.Select(DeveloperDto.FromDeveloper);
+            return Ok(items);
+        }
+
+        // POST: api/Developer
+        [HttpPost]
+        [Route("filtered")]
+        public async Task<IActionResult> FilteredList([FromBody] List<string> skills)
+        {
+            var filter = new DeveloperFilter(skills);
+
+            var repositoryItems = await _repository.ListAsync(filter);
+            var items = repositoryItems.Select(DeveloperDto.FromDeveloper);
+
             return Ok(items);
         }
 
@@ -57,7 +72,7 @@ namespace DevServ.Web.Api
             catch (Exception ex)
             {
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }            
+            }
         }
 
         // PUT: api/Developers

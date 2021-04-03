@@ -10,7 +10,7 @@ namespace DevServ.SharedKernel.Interfaces
     {
         Task<T> GetByIdAsync(int id);
         Task<List<T>> ListAsync();
-        
+        Task<List<T>> ListAsync(IFilter<T> filter);
         Task<T> AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);

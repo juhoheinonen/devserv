@@ -31,6 +31,15 @@ namespace DevServ.Infrastructure
                 Include(d => d.Skills).ToListAsync();
         }
 
+        public async Task<List<Developer>> ListAsync(IFilter<Developer> filter)
+        {
+            var developers = await _dbContext.Developers.Where(d => !d.IsDeleted).Include(d => d.Skills).ToListAsync();
+
+            developers = developers.Where(d => filter.Filter(d)).ToList();
+
+            return developers;
+        }
+
         public async Task UpdateAsync(Developer entity)
         {
             var existingItem = await GetByIdAsync(entity.Id);
