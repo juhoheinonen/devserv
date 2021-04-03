@@ -26,5 +26,17 @@ namespace DevServ.Core.Entities
             YearsOfExperience = yearsOfExperience;
         }
 
+        public Skill(int developerId, string name, int yearsOfExperience): this(name, yearsOfExperience)
+        {
+            DeveloperId = developerId;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Skill skill &&
+                   DeveloperId == skill.DeveloperId &&
+                   Name == skill.Name &&
+                   YearsOfExperience == skill.YearsOfExperience;
+        }
     }
 }

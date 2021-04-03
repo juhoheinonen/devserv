@@ -29,7 +29,7 @@ namespace DevServ.Infrastructure.Tests
             }
         };
 
-        private static readonly Developer Developer2 = new Developer()
+        public static readonly Developer Developer2 = new Developer()
         {
             FirstName = "Teemu",
             LastName = "Testaaja",

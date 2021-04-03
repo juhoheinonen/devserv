@@ -22,5 +22,21 @@ namespace DevServ.Core.Entities
         public bool IsDeleted { get; set; }
 
         public ICollection<Skill> Skills { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Developer developer &&
+                   Id == developer.Id &&
+                   FirstName == developer.FirstName &&
+                   LastName == developer.LastName &&
+                   Description == developer.Description &&
+                   Email == developer.Email &&
+                   PhoneNumber == developer.PhoneNumber &&
+                   SocialSecurityNumber == developer.SocialSecurityNumber &&
+                   HomePage == developer.HomePage &&
+                   OpenToWork == developer.OpenToWork &&
+                   IsDeleted == developer.IsDeleted &&
+                   Skills.SequenceEqual(developer.Skills);                
+        }
     }    
 }
