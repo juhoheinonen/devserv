@@ -25,9 +25,17 @@ namespace DevServ.Web.Api
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            var repositoryItems = await _repository.ListAsync();
-            var items = repositoryItems.Select(DeveloperDto.FromDeveloper);
-            return Ok(items);
+            try
+            {
+                var repositoryItems = await _repository.ListAsync();
+                var items = repositoryItems.Select(DeveloperDto.FromDeveloper);
+                return Ok(items);
+            }
+            catch (Exception ex)
+            {
+                // todo: log
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         // POST: api/Developer
