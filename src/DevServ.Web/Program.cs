@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Autofac.Extensions.DependencyInjection;
 using DevServ.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace DevServ.Web
 {
@@ -16,27 +13,34 @@ namespace DevServ.Web
     {
         public static void Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            //.WriteTo.ApplicationInsights()
+            .CreateLogger();
 
-            using (var scope = host.Services.CreateScope())
+            try
             {
-                var services = scope.ServiceProvider;
+                Log.Information("Starting up");
 
-                try
+                var host = CreateHostBuilder(args).Build();
+
+                using (var scope = host.Services.CreateScope())
                 {
+                    var services = scope.ServiceProvider;
+
                     var context = services.GetRequiredService<DevServDbContext>();
-                    //                    context.Database.Migrate();
                     context.Database.EnsureCreated();
                     SeedData.Initialize(services);
                 }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred seeding the DB.");
-                }
-            }
 
-            host.Run();
+                host.Run();
+
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "An error occurred during startup.");
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -44,14 +48,7 @@ namespace DevServ.Web
         .UseServiceProviderFactory(new AutofacServiceProviderFactory())
         .ConfigureWebHostDefaults(webBuilder =>
         {
-            webBuilder
-                .UseStartup<Startup>()
-                .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.AddConsole();
-                    // logging.AddAzureWebAppDiagnostics(); add this if deploying to Azure
-                });
+            webBuilder.UseStartup<Startup>();
         });
 
     }
