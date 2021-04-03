@@ -1,13 +1,13 @@
-﻿using DevServ.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
+﻿using DevServ.Core.Entities;
 using System;
-using DevServ.Core.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DevServ.Web
+namespace DevServ.Infrastructure.Tests
 {
-    public static class SeedData
+    public class TestDataInitializer
     {
         private static readonly Developer Developer1 = new Developer()
         {
@@ -69,21 +69,7 @@ namespace DevServ.Web
             }
         };
 
-        public static void Initialize(IServiceProvider serviceProvider)
-        {
-            using (var dbContext = new DevServDbContext(
-                            serviceProvider.GetRequiredService<DbContextOptions<DevServDbContext>>()))
-            {
-                // Look for any TODO items.
-                if (dbContext.Developers.Any())
-                {
-                    return;   // DB has been seeded
-                }
-
-                PopulateTestData(dbContext);
-            }
-        }
-        private static void PopulateTestData(DevServDbContext dbContext)
+        public static void PopulateTestData(DevServDbContext dbContext)
         {
             foreach (var item in dbContext.Developers)
             {
@@ -97,5 +83,6 @@ namespace DevServ.Web
 
             dbContext.SaveChanges();
         }
-    }    
+    }
+
 }
