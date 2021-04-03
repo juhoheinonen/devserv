@@ -19,10 +19,16 @@ namespace DevServ.Infrastructure
             _dbContext = dbContext;
         }
 
+        public async Task<Developer> GetByIdAsync(int id)
+        {
+            return await _dbContext.Developers.Include(d => d.Skills).SingleOrDefaultAsync(e => e.Id == id);
+        }
+
         public Task<List<Developer>> ListAsync()
         {
             return _dbContext.Developers.Include(d => d.Skills).ToListAsync();
         }
+
 
         //public T GetById<T>(int id) where T : BaseEntity, IAggregateRoot
         //{

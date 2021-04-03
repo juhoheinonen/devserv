@@ -27,5 +27,20 @@ namespace DevServ.Web.Api
             var items = repositoryItems.Select(DeveloperDto.FromDeveloper);
             return Ok(items);
         }
+
+        // GET: api/Developers
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var repositoryItem = await _repository.GetByIdAsync(id);
+
+            if (repositoryItem != null)
+            {
+                var item = DeveloperDto.FromDeveloper(repositoryItem);
+                return Ok(item);
+            }
+
+            return NotFound();
+        }
     }
 }
