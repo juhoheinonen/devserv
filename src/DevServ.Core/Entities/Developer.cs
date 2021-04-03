@@ -38,5 +38,22 @@ namespace DevServ.Core.Entities
                    IsDeleted == developer.IsDeleted &&
                    Skills.SequenceEqual(developer.Skills);                
         }
+
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Id);
+            hash.Add(FirstName);
+            hash.Add(LastName);
+            hash.Add(Description);
+            hash.Add(Email);
+            hash.Add(PhoneNumber);
+            hash.Add(SocialSecurityNumber);
+            hash.Add(HomePage);
+            hash.Add(OpenToWork);
+            hash.Add(IsDeleted);
+            hash.Add(Skills.GetHashCode());
+            return hash.ToHashCode();
+        }
     }    
 }

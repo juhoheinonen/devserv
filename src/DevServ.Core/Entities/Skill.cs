@@ -38,5 +38,10 @@ namespace DevServ.Core.Entities
                    Name == skill.Name &&
                    YearsOfExperience == skill.YearsOfExperience;
         }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, YearsOfExperience, DeveloperId);
+        }
     }
 }
