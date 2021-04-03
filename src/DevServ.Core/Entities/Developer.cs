@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DevServ.Core.Entities
 {
-    public class Developer : BaseEntity, IAggregateRoot
+    public class Developer : BaseEntity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

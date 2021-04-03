@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DevServ.SharedKernel.Interfaces
 {
-    public interface IRepository<T> where T : BaseEntity, IAggregateRoot
+    public interface IRepository<T> where T : BaseEntity
     {
         Task<T> GetByIdAsync(int id);
         Task<List<T>> ListAsync();
