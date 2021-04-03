@@ -29,14 +29,31 @@ namespace DevServ.Web.ApiModels
             {
                 Id = developer.Id,
                 FirstName = developer.FirstName,
-                LastName = developer.FirstName,
-                Description = developer.FirstName,
-                Email = developer.FirstName,
-                PhoneNumber = developer.FirstName,
+                LastName = developer.LastName,
+                Description = developer.Description,
+                Email = developer.Email,
+                PhoneNumber = developer.PhoneNumber,
                 SocialSecurityNumber = developer.SocialSecurityNumber,
                 HomePage = developer.HomePage,
                 OpenToWork = developer.OpenToWork,
                 Skills = SkillDto.FromSkills(developer.Skills)
+            };
+        }
+
+        public static Developer ToDeveloper(DeveloperDto developerDto)
+        {
+            return new Developer()
+            {
+                Id = developerDto.Id,
+                FirstName = developerDto.FirstName,
+                LastName = developerDto.LastName,
+                Description = developerDto.Description,
+                Email = developerDto.Email,
+                PhoneNumber = developerDto.PhoneNumber,
+                SocialSecurityNumber = developerDto.SocialSecurityNumber,
+                HomePage = developerDto.HomePage,
+                OpenToWork = developerDto.OpenToWork,
+                Skills = SkillDto.ToSkills(developerDto.Skills)
             };
         }
     }

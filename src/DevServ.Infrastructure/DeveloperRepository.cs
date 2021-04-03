@@ -1,16 +1,13 @@
 ﻿using DevServ.Core.Entities;
-using DevServ.SharedKernel;
 using DevServ.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DevServ.Infrastructure
 {
-    public class DeveloperRepository: IRepository<Developer>
+    public class DeveloperRepository : IRepository<Developer>
     {
         private readonly DevServDbContext _dbContext;
 
@@ -24,11 +21,36 @@ namespace DevServ.Infrastructure
             return await _dbContext.Developers.Include(d => d.Skills).SingleOrDefaultAsync(e => e.Id == id);
         }
 
-        public Task<List<Developer>> ListAsync()
+        public async Task<List<Developer>> ListAsync()
         {
-            return _dbContext.Developers.Include(d => d.Skills).ToListAsync();
+            return await _dbContext.Developers.Include(d => d.Skills).ToListAsync();
         }
 
+        public async Task UpdateAsync(Developer entity)
+        {
+            var existingItem = await GetByIdAsync(entity.Id);
+
+            if (existingItem == null)
+            {
+                throw new ArgumentException("No developer found with given id.");
+            }
+
+            existingItem.FirstName = entity.FirstName;
+            existingItem.LastName = entity.LastName;
+            existingItem.Description = entity.Description;
+            existingItem.Email = entity.Email;
+            existingItem.PhoneNumber = entity.PhoneNumber;
+            existingItem.SocialSecurityNumber = entity.SocialSecurityNumber;
+            existingItem.HomePage = entity.HomePage;
+            existingItem.OpenToWork = entity.OpenToWork;
+
+            existingItem.Skills.Clear();            
+            
+            existingItem.Skills = entity.Skills;
+
+            await _dbContext.SaveChangesAsync();
+
+        }
 
         //public T GetById<T>(int id) where T : BaseEntity, IAggregateRoot
         //{

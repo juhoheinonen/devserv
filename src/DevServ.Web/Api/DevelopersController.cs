@@ -1,10 +1,7 @@
 ﻿using DevServ.Core.Entities;
-using DevServ.SharedKernel;
 using DevServ.SharedKernel.Interfaces;
 using DevServ.Web.ApiModels;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,6 +38,20 @@ namespace DevServ.Web.Api
             }
 
             return NotFound();
+        }
+
+        // PUT: api/Developers
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] DeveloperDto developerDto)
+        {
+            // todo: implement some kind of data security
+
+            // todo: implement validation.
+            var developer = DeveloperDto.ToDeveloper(developerDto);
+
+            await _repository.UpdateAsync(developer);
+
+            return Ok();
         }
     }
 }
