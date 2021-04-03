@@ -70,6 +70,11 @@ namespace DevServ.Web.Api
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] DeveloperDto developerDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             var developer = DeveloperDto.ToDeveloper(developerDto);
 
             try
@@ -87,19 +92,26 @@ namespace DevServ.Web.Api
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] DeveloperDto developerDto)
         {
-            // todo: implement some kind of data security
-
-            // todo: implement validation.
-            var developer = DeveloperDto.ToDeveloper(developerDto);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
 
             try
-            {
+            {                
+                var developer = DeveloperDto.ToDeveloper(developerDto);
+
                 await _repository.UpdateAsync(developer);
                 return Ok();
             }
             catch (NoEntityFoundWithIdException ex)
             {
                 return NotFound();
+            }
+            catch (Exception ex)
+            {
+                // todo: log this
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -115,6 +127,10 @@ namespace DevServ.Web.Api
             catch (NoEntityFoundWithIdException ex)
             {
                 return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }

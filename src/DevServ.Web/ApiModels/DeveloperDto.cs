@@ -13,6 +13,7 @@ namespace DevServ.Web.ApiModels
         public string LastName { get; set; }
         public string Description { get; set; }
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
