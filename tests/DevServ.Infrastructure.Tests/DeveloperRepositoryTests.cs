@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -86,6 +87,30 @@ namespace DevServ.Infrastructure.Tests
                 Assert.Equal(2, actual.Count);
                 Assert.Equal(1, actual[0].Id);
                 Assert.Equal(2, actual[1].Id);
+            }
+        }
+
+        private readonly string[] OnlyJavaScript = new string[] { "javascript" };
+
+        [Theory]
+        [InlineData("javascript", 1, 2)]
+        [InlineData("javascript,Vuejs", 2)]
+        [InlineData("c#", 1)]
+        [InlineData("javascript,vuejs,c")]
+        public async Task ListAsyncFiltered_SearchBySkill_ReturnsAllExceptDeletedDeveloper(string skills, params int[] expectedDeveloperIds)
+        {
+            using (var context = CreateTestContext())
+            {
+                var sut = new DeveloperRepository(context);
+
+                var splitSkills = skills.Split(',').ToList();
+
+                var filter = new DeveloperFilter(splitSkills);
+
+                var actual = await sut.ListAsync(filter);
+
+                Assert.NotNull(actual);
+                Assert.Equal(expectedDeveloperIds.Count(), actual.Count);
             }
         }
 

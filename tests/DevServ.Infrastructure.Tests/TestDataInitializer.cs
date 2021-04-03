@@ -26,6 +26,7 @@ namespace DevServ.Infrastructure.Tests
                 new Skill("Angular", 4),
                 new Skill("Sql", 8),
                 new Skill("Azure", 5),
+                new Skill("javascript", 3)
             }
         };
 
