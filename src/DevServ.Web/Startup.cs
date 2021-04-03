@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using DevServ.Infrastructure;
 using DevServ.SharedKernel.Interfaces;
 using DevServ.Core.Entities;
+using Serilog;
 
 namespace DevServ.Web
 {
@@ -29,6 +30,9 @@ namespace DevServ.Web
             services.AddScoped(typeof(IRepository<Developer>), typeof(DeveloperRepository));
 
             services.AddControllers();
+
+            services.AddSingleton(Log.Logger);
+            services.AddApplicationInsightsTelemetry(Configuration["ApplicationInsightsInstrumentationKey"]);
 
             services.AddSwaggerGen(c =>
             {

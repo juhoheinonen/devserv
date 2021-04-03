@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Autofac.Extensions.DependencyInjection;
 using DevServ.Infrastructure;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,10 +20,17 @@ namespace DevServ.Web
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
             .Build();
+                        
+            var loggerConfiguration = new LoggerConfiguration().ReadFrom.Configuration(configuration);
+            
+            var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+            telemetryConfiguration.InstrumentationKey = configuration["ApplicationInsightsInstrumentationKey"];
+            loggerConfiguration.WriteTo
+                .ApplicationInsights(telemetryConfiguration,
+                    TelemetryConverter.Traces);            
 
-            Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(configuration)
-            .CreateLogger();
+            Log.Logger = loggerConfiguration.CreateLogger();
+
             try
             {
                 Log.Information("Starting up");
@@ -54,7 +62,6 @@ namespace DevServ.Web
         .ConfigureWebHostDefaults(webBuilder =>
         {
             webBuilder.UseStartup<Startup>();
-        });
-
+        });        
     }
 }
