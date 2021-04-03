@@ -1,7 +1,9 @@
 using System;
+using System.IO;
 using Autofac.Extensions.DependencyInjection;
 using DevServ.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,12 +15,14 @@ namespace DevServ.Web
     {
         public static void Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-            .Enrich.FromLogContext()
-            .WriteTo.Console()
-            //.WriteTo.ApplicationInsights()
-            .CreateLogger();
+            var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
 
+            Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(configuration)
+            .CreateLogger();
             try
             {
                 Log.Information("Starting up");
@@ -46,6 +50,7 @@ namespace DevServ.Web
         public static IHostBuilder CreateHostBuilder(string[] args) =>
     Host.CreateDefaultBuilder(args)
         .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+        .UseSerilog()
         .ConfigureWebHostDefaults(webBuilder =>
         {
             webBuilder.UseStartup<Startup>();

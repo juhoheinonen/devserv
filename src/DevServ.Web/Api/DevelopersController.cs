@@ -4,7 +4,7 @@ using DevServ.Infrastructure;
 using DevServ.SharedKernel.Interfaces;
 using DevServ.Web.ApiModels;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +16,9 @@ namespace DevServ.Web.Api
     public class DevelopersController : BaseApiController
     {
         private IRepository<Developer> _repository;
-        private readonly ILogger _logger;
+        private readonly ILogger<DevelopersController> _logger;
 
-        public DevelopersController(IRepository<Developer> repository, ILogger logger)
+        public DevelopersController(IRepository<Developer> repository, ILogger<DevelopersController> logger)
         {
             _repository = repository;
             this._logger = logger;
@@ -30,14 +30,14 @@ namespace DevServ.Web.Api
         {
             try
             {
-                _logger.Information("Get list of developers");
+                _logger.LogInformation("Get list of developers");
                 var repositoryItems = await _repository.ListAsync();
                 var items = repositoryItems.Select(DeveloperDto.FromDeveloper);
                 return Ok(items);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "An error in get list of developers");
+                _logger.LogError(ex, "An error in get list of developers");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -49,7 +49,7 @@ namespace DevServ.Web.Api
         {
             try
             {
-                _logger.Information("Get filtered list of developers");
+                _logger.LogInformation("Get filtered list of developers");
 
                 var filter = new DeveloperFilter(skills);
 
@@ -60,7 +60,7 @@ namespace DevServ.Web.Api
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "An error in get filtered list of developers");
+                _logger.LogError(ex, "An error in get filtered list of developers");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -71,7 +71,7 @@ namespace DevServ.Web.Api
         {
             try
             {
-                _logger.Information("Start get by id");
+                _logger.LogInformation("Start get by id");
 
                 var repositoryItem = await _repository.GetByIdAsync(id);
 
@@ -87,7 +87,7 @@ namespace DevServ.Web.Api
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "An error in get by id");
+                _logger.LogError(ex, "An error in get by id");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -96,11 +96,11 @@ namespace DevServ.Web.Api
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] DeveloperDto developerDto)
         {
-            _logger.Information("Start add new developer");
+            _logger.LogInformation("Start add new developer");
 
             if (!ModelState.IsValid)
             {
-                _logger.Warning("Add new developer invalid input");
+                _logger.LogWarning("Add new developer invalid input");
                 return BadRequest();
             }
 
@@ -113,7 +113,7 @@ namespace DevServ.Web.Api
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error in add developer");
+                _logger.LogError(ex, "Error in add developer");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -122,11 +122,11 @@ namespace DevServ.Web.Api
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] DeveloperDto developerDto)
         {
-            _logger.Information("Start update developer");
+            _logger.LogInformation("Start update developer");
 
             if (!ModelState.IsValid)
             {
-                _logger.Warning("Update developer invalid input");
+                _logger.LogWarning("Update developer invalid input");
                 return BadRequest();
             }
 
@@ -139,12 +139,12 @@ namespace DevServ.Web.Api
             }
             catch (NoEntityFoundWithIdException)
             {
-                _logger.Warning("Update developer no entity found");
+                _logger.LogWarning("Update developer no entity found");
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error in update developer");
+                _logger.LogError(ex, "Error in update developer");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -153,7 +153,7 @@ namespace DevServ.Web.Api
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            _logger.Information("Start delete developer");
+            _logger.LogInformation("Start delete developer");
             try
             {
                 await _repository.DeleteAsync(id);
@@ -161,12 +161,12 @@ namespace DevServ.Web.Api
             }
             catch (NoEntityFoundWithIdException)
             {
-                _logger.Warning("Delete developer no entity found");
+                _logger.LogWarning("Delete developer no entity found");
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error in delete developer");
+                _logger.LogError(ex, "Error in delete developer");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
